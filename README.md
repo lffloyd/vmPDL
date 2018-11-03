@@ -28,7 +28,7 @@ Para o qual deve-se digitar o nome do arquivo a ser usado como tal. Em seguida, 
 
 * **Luiz Felipe de Melo** - *Implementação, documentação.* - [lffloyd](https://github.com/lffloyd)
 * **Vítor Costa** - *Implementação, documentação.* - [vitorhardoim](https://github.com/vitorhardoim)
-* **Mariana Werneck** - *Implementação, documentação.* - [aInserir](https://github.com/aInserir)
+* **Mariana Werneck** - *Implementação, documentação.* - [marianawerneck](https://github.com/marianawerneck)
 
 Veja a lista de [contribuidores](https://github.com/lffloyd/vmPDL/contributors) participantes no projeto.
 
