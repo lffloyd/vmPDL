@@ -1,15 +1,15 @@
 #lang racket
 
 ; Verifica se um elemento x eh um programa PDL.
-(define (eh-programa x)
+(define (programa? x)
   (cond [(eq? false (regexp-match #rx"[a-z]+" x)) false] [else true]))
 
 ; Verifica se um elemento x eh uma proposicao em PDL.
-(define (eh-proposicao x)
+(define (proposicao? x)
   (cond [(eq? false (regexp-match #rx"[A-Z]+" x)) false] [else true]))
 
 ; Verifica se um objeto pertence a uma lista de elementos.
-(define (pertence obj elems)
+(define (pertence-a? obj elems)
   (cond [(empty? elems) false]
         [(empty? (filter (lambda (x) (equal? x obj)) elems)) false]
         [else true]))
@@ -25,8 +25,8 @@
   (display "Conteudo: ")
   (writeln prog)
   (define elems (string-split prog " "))
-  (define programas (filter (lambda (x) (eq? true (eh-programa x))) elems))
-  (define simbolos (filter (lambda (x) (eq? false (pertence x programas))) elems))
+  (define programas (filter (lambda (x) (eq? true (programa? x))) elems))
+  (define simbolos (filter (lambda (x) (eq? false (pertence-a? x programas))) elems))
   (display "Simbolos: ")
   (writeln simbolos)
   (display "Programas: ")
@@ -34,8 +34,8 @@
 
 (define (criar-valoracoes in vals)
   (define l (read-line in))
-  (cond [(not (eof-object? l)) (cons l vals)]
-        [else (cons l vals)]))
+  (cond [(eof-object? l) cons l vals]
+        [else (cons l (criar-valoracoes in vals))]))
 
 (define (criar-grafo nome-arq)
   (display "Arquivo de grafo: ")
@@ -43,7 +43,7 @@
   (define in (open-input-file nome-arq))
   (define mun-str (read-line in))
   (define rel-str (read-line in))
-  (define vals-str (criar-valoracoes in (cons (read-line in) '())))
+  (define vals-str (criar-valoracoes in'()))
   (close-input-port in)
   (display "Mundos: ")
   (writeln mun-str)
