@@ -68,7 +68,7 @@
   (cond [(empty? lista) null]
         [else (display (first lista))
               (add-directed-edge! grafo (first(rest(first lista))) (first(rest(rest(first lista)))) (first(first lista)))
-              (cria-grafo (rest lista) grafo)])
+              (gera-grafo (rest lista) grafo)])
 )
 
 (define (criar-grafo nome-arq)
