@@ -64,17 +64,27 @@
   (cond [(equal? l "") ""]
         [else (map (lambda (x) (string->symbol x)) (pegar-mundos l))]))
 
+(define (gera-grafo lista grafo)
+  (cond [(empty? lista) null]
+        [else (display (first lista))
+              (add-directed-edge! grafo (first(rest(first lista))) (first(rest(rest(first lista)))) (first(first lista)))
+              (cria-grafo (rest lista) grafo)])
+)
+
 (define (criar-grafo nome-arq)
   (display "Arquivo de grafo: ")
   (writeln nome-arq)
   (define in (open-input-file nome-arq))
   (define mun (criar-mundos (read-line in)))
   (define relac (criar-relacoes in '()))
+  (define grafo1 (weighted-graph/directed '()))
   (close-input-port in)
   (display "Mundos: ")
   (writeln mun)
   (display "Relacoes em alpha: ")
   (writeln relac))
+  (gera-grafo relac grafo1)
+  (display (graphviz grafo1))
 
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
 (define (main mensagem)
