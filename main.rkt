@@ -68,13 +68,13 @@
   (display "Arquivo de grafo: ")
   (writeln nome-arq)
   (define in (open-input-file nome-arq))
-  (define mun-str (criar-mundos (read-line in)))
-  (define relalp-str (criar-relacoes in '()))
+  (define mun (criar-mundos (read-line in)))
+  (define relac (criar-relacoes in '()))
   (close-input-port in)
   (display "Mundos: ")
-  (writeln mun-str)
+  (writeln mun)
   (display "Relacoes em alpha: ")
-  (writeln relalp-str))
+  (writeln relac))
 
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
 (define (main mensagem)
