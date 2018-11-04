@@ -1,0 +1,4 @@
+W = {a, b, c, d, e}
+Ra = {(a, a), (a, b), (b, c), (c, d), (d, d)}
+p = {a, b, c, d}
+q = {a, e}

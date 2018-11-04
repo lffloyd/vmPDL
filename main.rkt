@@ -32,13 +32,37 @@
   (display "Programas: ")
   (writeln programas))
 
+(define (criar-valoracoes in vals)
+  (define l (read-line in))
+  (cond [(not (eof-object? l)) (cons l vals)]
+        [else (cons l vals)]))
+
+(define (criar-grafo nome-arq)
+  (display "Arquivo de grafo: ")
+  (writeln nome-arq)
+  (define in (open-input-file nome-arq))
+  (define mun-str (read-line in))
+  (define rel-str (read-line in))
+  (define vals-str (criar-valoracoes in (cons (read-line in) '())))
+  (close-input-port in)
+  (display "Mundos: ")
+  (writeln mun-str)
+  (display "Relacoes em alpha: ")
+  (writeln rel-str)
+  (display "Valoracoes: ")
+  (writeln vals-str))
+
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
 (define (main mensagem)
   (cond [(not (equal? "" mensagem)) (writeln mensagem)])
   (display "Insira o nome do arq. do programa PDL: ")
-  (define nome-arq (read-line (current-input-port) 'any))
-  (cond [(file-exists? nome-arq) (parser nome-arq)]
-        [else (main "Arq. de prog. PDL inexistente!")]))
+  (define nome-pro (read-line (current-input-port) 'any))
+  (cond [(file-exists? nome-pro) (parser nome-pro)]
+        [else (main "Arq. de prog. PDL inexistente!")])
+  (display "Insira o nome do arq. do grafo PDL: ")
+  (define nome-graf (read-line (current-input-port) 'any))
+  (cond [(file-exists? nome-graf) (criar-grafo nome-graf)]
+        [else (main "Arq. de graf. PDL inexistente!")]))
 
 ; Chamada a funcao 'main' que recebe do usuario os nomes dos arquivos (de programa e grafo PDL) a serem processados.
 (main "")
