@@ -47,6 +47,10 @@
   (cond [(empty? l) l]
         [else (cons (string->symbol (first l)) (simbolizar-elems (rest l)))]))
 
+(define (juntar l1 l2)
+  (cond [(empty? l1) l2]
+        [else (cons (first l1) (juntar (rest l1) l2))]))
+
 (define (pegar-tuplas l)
   (define l2 (limpar-string l))
   (cond [(equal? l "") ""]
@@ -55,7 +59,7 @@
 (define (criar-relacoes in rels)
   (define l (read-line in))
   (cond [(eof-object? l) cons l rels]
-        [else (cons (pegar-tuplas l) (criar-relacoes in rels))]))
+        [else (juntar (pegar-tuplas l) (criar-relacoes in rels))]))
 
 (define (pegar-mundos m)
   (cond [(equal? m "") false] [else (regexp-match* #rx"[a-z0-9]+" (string-trim (string-trim m "}") "W = {"))]))
@@ -64,11 +68,10 @@
   (cond [(equal? l "") ""]
         [else (map (lambda (x) (string->symbol x)) (pegar-mundos l))]))
 
-(define (gera-grafo lista grafo)
+(define (gerar-grafo lista grafo)
   (cond [(empty? lista) null]
-        [else (display (first lista))
-              (add-directed-edge! grafo (first(rest(first lista))) (first(rest(rest(first lista)))) (first(first lista)))
-              (gera-grafo (rest lista) grafo)])
+        [else (add-directed-edge! grafo (first(rest(first lista))) (first(rest(rest(first lista)))) (first(first lista)))
+              (gerar-grafo (rest lista) grafo)])
 )
 
 (define (criar-grafo nome-arq)
@@ -82,9 +85,9 @@
   (display "Mundos: ")
   (writeln mun)
   (display "Relacoes em alpha: ")
-  (writeln relac))
-  (gera-grafo relac grafo1)
-  (display (graphviz grafo1))
+  (writeln relac)
+  (gerar-grafo relac grafo1)
+  (display (graphviz grafo1)))
 
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
 (define (main mensagem)
