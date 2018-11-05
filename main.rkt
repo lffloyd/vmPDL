@@ -16,7 +16,7 @@
         [else true]))
 
 #| Recebe como entrada uma 'string' contendo todo o conteudo de um programa PDL lido.
-   Separa cada elemento do programa PDL em suas categorias. |#
+   Separa cada elemento do programa PDL em suas categorias. Funcionalidade ainda nao esta pronta.|#
 (define (parser nome-arq)
   (display "Arquivo: ")
   (writeln nome-arq)
@@ -33,47 +33,56 @@
   (display "Programas: ")
   (writeln programas))
 
-(define (pegar-elementos l)
-  (cond [(not (equal? l "")) (map (lambda (x) (string-trim x ","))
-                                  (string-split (string-replace (string-trim l "}") " = {" " ") " "))]
-        [else ""]))
-
+; Funcao que remove trechos inuteis numa string s que representa os mundos/estados do grafo.
 (define (limpar-string s)
   (cond [(equal? s "") ""]
         [else (map (lambda (x) (string-split (string-trim (string-trim x ",") ")") ", "))
                    (string-split (string-replace (string-trim s "}") " = {" " ") " ("))]))
 
+; Funcao que transforma em simbolos os elementos string contidos numa determinada lista l.
 (define (simbolizar-elems l)
   (cond [(empty? l) l]
         [else (cons (string->symbol (first l)) (simbolizar-elems (rest l)))]))
 
+; Funcao que junta duas listas.
 (define (juntar l1 l2)
   (cond [(empty? l1) l2]
         [else (cons (first l1) (juntar (rest l1) l2))]))
 
+; A partir de uma lista l, retorna as tuplas internas a mesma que representam relacoes binarias associado programas a estados.
 (define (pegar-tuplas l)
   (define l2 (limpar-string l))
   (cond [(equal? l "") ""]
         [else (rest (map (lambda (x) (cons (string->symbol (first (first l2))) (simbolizar-elems x))) l2))]))
 
+; Funcao que cria uma lista de relacoes entre programas e estados a partir de um dado arquivo aberto in.
 (define (criar-relacoes in rels)
   (define l (read-line in))
   (cond [(eof-object? l) cons l rels]
         [else (juntar (pegar-tuplas l) (criar-relacoes in rels))]))
 
+; Funcao que a partir de uma string m descobre os mundos existentes na mesma. Usada pela funcao 'criar-mundos' a seguir.
 (define (pegar-mundos m)
   (cond [(equal? m "") false] [else (regexp-match* #rx"[a-z0-9]+" (string-trim (string-trim m "}") "W = {"))]))
 
+; Funcao que cria o conjunto de mundos/estados possiveis de um grafo a partir de uma string l contendo-os. Retorna uma lista com
+; a simbolizacao de cada mundo.
 (define (criar-mundos l)
   (cond [(equal? l "") ""]
         [else (map (lambda (x) (string->symbol x)) (pegar-mundos l))]))
 
+; Conerte um simbolo em numero.
+(define (symbol->number sym)
+  (string->number (symbol->string sym)))
+
+; Gera um grafo a partir de uma dada lista.
 (define (gerar-grafo lista grafo)
   (cond [(empty? lista) null]
-        [else (add-directed-edge! grafo (first(rest(first lista))) (first(rest(rest(first lista)))) (first(first lista)))
+        [else (add-directed-edge! grafo (first(rest(first lista))) (first(rest(rest(first lista)))) (symbol->number (first(first lista))))
               (gerar-grafo (rest lista) grafo)])
 )
 
+; Funcao que cria um grafo a partir do nome de arq. de grafo passado por parametro. Cria mundos/estados e relacoes entre os mesmos.
 (define (criar-grafo nome-arq)
   (display "Arquivo de grafo: ")
   (writeln nome-arq)
