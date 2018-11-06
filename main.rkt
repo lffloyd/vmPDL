@@ -1,5 +1,6 @@
 #lang racket
 (require graph)
+(define eh-valido true)
 
 ; Verifica se um elemento x eh um programa PDL.
 (define (programa? x)
@@ -98,10 +99,20 @@
   (string->number (symbol->string sym)))
 
 ; Gera um grafo a partir de uma dada lista.
-(define (gerar-grafo lista grafo)
+(define (gerar-grafo lista grafo mundo)
   (cond [(empty? lista) null]
-        [else (add-directed-edge! grafo (first(rest(first lista))) (first(rest(rest(first lista)))) (symbol->number (first(first lista))))
-              (gerar-grafo (rest lista) grafo)])
+        [else
+             (cond [(member (first(rest(first lista))) mundo)
+                   (cond [(member (first(rest(rest(first lista)))) mundo)
+                         (add-directed-edge! grafo (first(rest(first lista))) (first(rest(rest(first lista)))) (symbol->number (first(first lista))))
+                         (gerar-grafo (rest lista) grafo mundo)
+                   ][else
+                     (set! eh-valido false)
+                     (display "Grafo Invalido")])
+             ][else
+               (set! eh-valido false)
+               (display "Grafo Invalido")])
+         ])
 )
 
 ; Funcao que cria um grafo a partir do nome de arq. de grafo passado por parametro. Cria mundos/estados e relacoes entre os mesmos.
@@ -117,8 +128,10 @@
   (writeln mun)
   (display "Relacoes em alpha: ")
   (writeln relac)
-  (gerar-grafo relac grafo1)
-  (display (graphviz grafo1)))
+  (gerar-grafo relac grafo1 mun)
+  (cond [eh-valido
+         (display (graphviz grafo1))])
+)
 
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
 (define (main mensagem)
