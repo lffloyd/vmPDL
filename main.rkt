@@ -19,18 +19,17 @@
 (define (remover l1 l2)
   (cond [(empty? l1) l2]
         [(empty? l2) l1]
-        [(eq? (first l1) (first l2)) (remover (cdr l1) (cdr l2))]
+        [(eq? (first l1) (first l2)) (cons (second l2) (remover (cdr l1) (cdr l2)))]
         [else (cons (first l2) (remover (cdr l1) (cdr l2)))]))
 
 (define (pegar-trechos p parent)
-  (cond [(empty? p) p]
-        [(empty? parent) parent]
-        [(eq? (string->symbol "(") (first p)) (cons (first p) (pegar-trechos (rest p) (cons ((first p) parent))))]
+  (cond [(empty? parent) parent]
+        [(eq? (string->symbol "(") (first p)) (cons (first p) (pegar-trechos (rest p) (cons (first p) parent)))]
         [(eq? (string->symbol ")") (first p)) (cons (first p) (pegar-trechos (rest p) (reverse (cdr (reverse parent)))))]))
 
 (define (processar-programa p)
   (cond [(empty? p) p]
-        [(eq? (first p) (string->symbol "(")) (define trecho (pegar-trechos p))
+        [(eq? (first p) (string->symbol "(")) (define trecho (pegar-trechos p '()))
                                               (display trecho)
                                               (processar-programa (remover trecho p))]))
 
@@ -53,8 +52,11 @@
   ;(writeln programas)
   (define prog-simb (simbolizar-elems elems))
   (display "Entrada simbolizada: ")
-  (display prog-simb)
-  (processar-programa prog-simb))
+  (writeln prog-simb)
+  ;(processar-programa prog-simb)
+  (define trechos (pegar-trechos prog-simb (cons (string->symbol "(") '())))
+  (display "Trechos: ")
+  (writeln trechos))
 
 ; Funcao que remove trechos inuteis numa string s que representa os mundos/estados do grafo.
 (define (limpar-string s)
@@ -108,10 +110,10 @@
                          (gerar-grafo (rest lista) grafo mundo)
                    ][else
                      (set! eh-valido false)
-                     (display "Grafo Invalido")])
+                     (display "Grafo invalido!")])
              ][else
                (set! eh-valido false)
-               (display "Grafo Invalido")])
+               (display "Grafo invalido!")])
          ])
 )
 
