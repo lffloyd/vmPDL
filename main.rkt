@@ -16,17 +16,20 @@
         [(empty? (filter (lambda (x) (equal? x obj)) elems)) false]
         [else true]))
 
+; Com problemas.
 (define (remover l1 l2)
   (cond [(empty? l1) l2]
         [(empty? l2) l1]
         [(eq? (first l1) (first l2)) (cons (second l2) (remover (cdr l1) (cdr l2)))]
         [else (cons (first l2) (remover (cdr l1) (cdr l2)))]))
 
+; Com problemas.
 (define (pegar-trechos p parent)
   (cond [(empty? parent) parent]
         [(eq? (string->symbol "(") (first p)) (cons (first p) (pegar-trechos (rest p) (cons (first p) parent)))]
         [(eq? (string->symbol ")") (first p)) (cons (first p) (pegar-trechos (rest p) (reverse (cdr (reverse parent)))))]))
 
+; Com problemas.
 (define (processar-programa p)
   (cond [(empty? p) p]
         [(eq? (first p) (string->symbol "(")) (define trecho (pegar-trechos p '()))
