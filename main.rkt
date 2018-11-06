@@ -3,7 +3,7 @@
 
 ; Verifica se um elemento x eh um programa PDL.
 (define (programa? x)
-  (cond [(eq? false (regexp-match #rx"[a-z]+" x)) false] [else true]))
+  (cond [(eq? false (regexp-match #rx"[a-z0-9]+" x)) false] [else true]))
 
 ; Verifica se um elemento x eh uma proposicao em PDL.
 (define (proposicao? x)
@@ -14,6 +14,24 @@
   (cond [(empty? elems) false]
         [(empty? (filter (lambda (x) (equal? x obj)) elems)) false]
         [else true]))
+
+(define (remover l1 l2)
+  (cond [(empty? l1) l2]
+        [(empty? l2) l1]
+        [(eq? (first l1) (first l2)) (remover (cdr l1) (cdr l2))]
+        [else (cons (first l2) (remover (cdr l1) (cdr l2)))]))
+
+(define (pegar-trechos p parent)
+  (cond [(empty? p) p]
+        [(empty? parent) parent]
+        [(eq? (string->symbol "(") (first p)) (cons (first p) (pegar-trechos (rest p) (cons ((first p) parent))))]
+        [(eq? (string->symbol ")") (first p)) (cons (first p) (pegar-trechos (rest p) (reverse (cdr (reverse parent)))))]))
+
+(define (processar-programa p)
+  (cond [(empty? p) p]
+        [(eq? (first p) (string->symbol "(")) (define trecho (pegar-trechos p))
+                                              (display trecho)
+                                              (processar-programa (remover trecho p))]))
 
 #| Recebe como entrada uma 'string' contendo todo o conteudo de um programa PDL lido.
    Separa cada elemento do programa PDL em suas categorias. Funcionalidade ainda nao esta pronta.|#
@@ -26,12 +44,16 @@
   (display "Conteudo: ")
   (writeln prog)
   (define elems (string-split prog " "))
-  (define programas (filter (lambda (x) (programa? x)) elems))
-  (define simbolos (filter (lambda (x) (not (pertence-a? x programas))) elems))
-  (display "Simbolos: ")
-  (writeln simbolos)
-  (display "Programas: ")
-  (writeln programas))
+  ;(define programas (filter (lambda (x) (programa? x)) elems))
+  ;(define simbolos (filter (lambda (x) (not (pertence-a? x programas))) elems))
+  ;(display "Simbolos: ")
+  ;(writeln simbolos)
+  ;(display "Programas: ")
+  ;(writeln programas)
+  (define prog-simb (simbolizar-elems elems))
+  (display "Entrada simbolizada: ")
+  (display prog-simb)
+  (processar-programa prog-simb))
 
 ; Funcao que remove trechos inuteis numa string s que representa os mundos/estados do grafo.
 (define (limpar-string s)
