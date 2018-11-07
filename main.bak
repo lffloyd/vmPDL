@@ -1,46 +1,6 @@
 #lang racket
 (require graph)
 (define eh-valido true)
-(define no-atual 'x1)
-(define entrada-programa(list 1 2))
-
-(define matriz-grafo '())
-;(set! entrada-programa (append entrada-programa (list (list 5 6))))
-
-(define matriz-programa '())
-
-(define (executa-programas grafo)
-  (define programa-atual (first entrada-programa))
-  (cond [(number? programa-atual) (executa-programa-simples grafo programa-atual)]
-
-  )
-)
-
-;programa simples é true?
-
-(define(executa-programa-simples grafo programa)
-  (define vizinhos (get-neighbors grafo no-atual))
-  (define transicoes-possiveis '())
-  (writeln "AQUI")
-  (display (teste-vizinhos grafo programa vizinhos transicoes-possiveis))
-  ;(set! (append matriz-programa transicoes-possiveis))
-  )
-
-(define (teste-vizinhos grafo programa vizinhos transicoes-possiveis)
-  (cond [(empty? vizinhos)
-         ;(set! no-atual (first vizinhos))
-         transicoes-possiveis]
-        [else
-         (cond[(equal? programa (edge-weight grafo no-atual (first vizinhos)))
-               (set! transicoes-possiveis (append transicoes-possiveis (list(list no-atual (first vizinhos)))))
-               (teste-vizinhos grafo programa (rest vizinhos) transicoes-possiveis)
-               ]
-              [else
-               (teste-vizinhos grafo programa (rest vizinhos) transicoes-possiveis)]
-              )
-  ])
-)
-
 
 ; Verifica se um elemento x eh um programa PDL.
 (define (programa? x)
@@ -51,11 +11,11 @@
   (cond [(eq? false (regexp-match #rx"[A-Z]+" x)) false] [else true]))
 
 ; Verifica se um objeto pertence a uma lista de elementos.
-(define (pertence-a? obj elems)(
+(define (pertence-a? obj elems)
   (cond [(empty? elems) false]
         [(empty? (filter (lambda (x) (equal? x obj)) elems)) false]
         [else true]))
-)
+
 ; Com problemas.
 (define (remover l1 l2)
   (cond [(empty? l1) l2]
@@ -174,9 +134,27 @@
   (display "Relacoes em alpha: ")
   (writeln relac)
   (gerar-grafo relac grafo1 mun)
-  (executa-programas grafo1)
-  ;(cond [eh-valido
-         (display (graphviz grafo1));])
+  (cond [eh-valido
+         (display (graphviz grafo1))])
+)
+
+; [a] é true?
+
+(define(teste1 grafo no-partida programa)
+  (define vizinhos (get-neighbors grafo no-partida))
+  (teste-vizinhos grafo no-partida programa vizinhos)
+  )
+
+(define (teste-vizinhos grafo no-partida programa vizinhos)
+  (cond [(empty? vizinhos) false]
+        [else
+         (cond[(equal? programa (edge-weight grafo no-partida (first vizinhos)))
+               (set! no-partida (first vizinhos))
+               true]
+              [else
+               (teste-vizinhos grafo no-partida programa (rest vizinhos))]
+              )
+  ])
 )
 
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
