@@ -138,6 +138,25 @@
          (display (graphviz grafo1))])
 )
 
+; [a] é true?
+
+(define(teste1 grafo no-partida programa)
+  (define vizinhos (get-neighbors grafo no-partida))
+  (teste-vizinhos grafo no-partida programa vizinhos)
+  )
+
+(define (teste-vizinhos grafo no-partida programa vizinhos)
+  (cond [(empty? vizinhos) false]
+        [else
+         (cond[(equal? programa (edge-weight grafo no-partida (first vizinhos)))
+               (set! no-partida (first vizinhos))
+               true]
+              [else
+               (teste-vizinhos grafo no-partida programa (rest vizinhos))]
+              )
+  ])
+)
+
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
 (define (main mensagem)
   (cond [(not (equal? "" mensagem)) (writeln mensagem)])
