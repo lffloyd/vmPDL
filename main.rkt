@@ -9,6 +9,7 @@
 
 (define matriz-programa '())
 
+;dado um grafo e a lista de programas, nós executamos esses programas sequencialmente.
 (define (executa-programas grafo)
   (define programa-atual (first entrada-programa))
   (cond [(number? programa-atual) (executa-programa-simples grafo programa-atual)]
@@ -16,30 +17,21 @@
   )
 )
 
-;programa simples é true?
+;para uma transição simples, a partir do nó atual e um programa, a função leva o nó atual para o primeiro caminho possivel com base no programa dado.
 
 (define(executa-programa-simples grafo programa)
   (define vizinhos (get-neighbors grafo no-atual))
-  (define transicoes-possiveis '())
-  (writeln "AQUI")
-  (display (teste-vizinhos grafo programa vizinhos transicoes-possiveis))
-  ;(set! (append matriz-programa transicoes-possiveis))
-  )
+  (display (teste-vizinhos grafo programa vizinhos '())))
 
-(define (teste-vizinhos grafo programa vizinhos transicoes-possiveis)
-  (cond [(empty? vizinhos)
-         ;(set! no-atual (first vizinhos))
-         transicoes-possiveis]
+;percorre todos os vizinhos do nó para ver qual deles é o que tem o 'peso' do programa dado, e retorna uma lista com o par ordenado da transição.
+
+(define (teste-vizinhos grafo programa vizinhos transicao-possivel)
+  (cond [(empty? vizinhos) transicao-possivel]
         [else
          (cond[(equal? programa (edge-weight grafo no-atual (first vizinhos)))
-               (set! transicoes-possiveis (append transicoes-possiveis (list(list no-atual (first vizinhos)))))
-               (teste-vizinhos grafo programa (rest vizinhos) transicoes-possiveis)
-               ]
+               (append transicao-possivel (list(list no-atual (first vizinhos))))]
               [else
-               (teste-vizinhos grafo programa (rest vizinhos) transicoes-possiveis)]
-              )
-  ])
-)
+               (teste-vizinhos grafo programa (rest vizinhos) transicao-possivel)])]))
 
 
 ; Verifica se um elemento x eh um programa PDL.
