@@ -1,0 +1,35 @@
+#lang racket
+(define programa (list 1 ";" 2))
+;(display (first programa))
+;(display (rest programa))
+(define relacoes (list ))
+(display relacoes)
+(display "\n")
+;(set! programa(append programa(list ";" 3)))
+
+;(display programa)
+
+(define (le_programa programa_entrada anterior anteriorS relacoes)
+  (cond[(empty? programa_entrada)
+       relacoes]
+      [(number? (first programa_entrada))
+       (set! relacoes(append (list anterior (first programa_entrada))))
+       (set! anterior (first programa_entrada))
+       (le_programa (rest programa_entrada) anterior anteriorS relacoes)
+       ]
+      [else
+       (cond[(equal? (first programa_entrada) "U") "deu ruim uniao"])
+       (cond[(equal? (first programa_entrada) "*")
+             (cond[(equal? anteriorS ")")
+                   (le_programa (rest programa_entrada) anterior "*" relacoes)
+             ]
+             [else (set! relacoes(append (list anterior anterior)))
+                   (le_programa (rest programa_entrada) anterior anteriorS relacoes)])
+            ]
+       )
+       (le_programa (rest programa_entrada) anterior (first programa_entrada) relacoes)
+     ]
+   )
+)
+
+(le_programa programa (first programa) "" relacoes)
