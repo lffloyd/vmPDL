@@ -1,6 +1,28 @@
 #lang racket
 (require graph)
 (define eh-valido true)
+(define entrada '((1 2) * U (3 4) *))
+
+(define (varrer-entrada p)
+  (cond [(empty? p) p]
+        [else (fprintf (current-output-port) "Eh lista? ~a - Eh atomo? ~a - Elemento: ~a\n" (list? (first p)) (not (list? (first p))) (first p))
+              (varrer-entrada (rest p))]))
+
+(define (criar-trecho p)
+  (printf "Hey you -> ~a\n" p)
+  (cond [(empty? p) p]
+        [(list? (first p)) (cons (criar-trecho (first p)) (criar-trecho (rest p)))]
+        [(atom? (first p)) (cons (first p) (criar-trecho (rest p)))]))
+
+(define (processar-entrada p)
+  (local
+    [(define tr (criar-trecho (first p)))]
+    (cond [(not (empty? tr)) (printf "Trecho: ~a\n" tr)]
+          [(not (empty? p)) (processar-entrada (rest p))])))
+
+(define (atom? x)
+  (cond [(list? x) false]
+        [else true]))
 
 ; Verifica se um elemento x eh um programa PDL.
 (define (programa? x)
@@ -48,18 +70,16 @@
   (writeln prog)
   (define elems (string-split prog " "))
   ;(define programas (filter (lambda (x) (programa? x)) elems))
-  ;(define simbolos (filter (lambda (x) (not (pertence-a? x programas))) elems))
-  ;(display "Simbolos: ")
-  ;(writeln simbolos)
-  ;(display "Programas: ")
-  ;(writeln programas)
-  (define prog-simb (simbolizar-elems elems))
-  (display "Entrada simbolizada: ")
-  (writeln prog-simb)
+  (display "Elementos: ")
+  (writeln elems)
+  ;(define prog-simb (simbolizar-elems elems))
+  ;(display "Entrada simbolizada: ")
+  ;(display prog-simb)
   ;(processar-programa prog-simb)
-  (define trechos (pegar-trechos prog-simb (cons (string->symbol "(") '())))
-  (display "Trechos: ")
-  (writeln trechos))
+  ;(define trechos (pegar-trechos prog-simb (cons (string->symbol "(") '())))
+  ;(display "Trechos: ")
+  ;(writeln trechos)
+  )
 
 ; Funcao que remove trechos inuteis numa string s que representa os mundos/estados do grafo.
 (define (limpar-string s)
@@ -70,6 +90,7 @@
 ; Funcao que transforma em simbolos os elementos string contidos numa determinada lista l.
 (define (simbolizar-elems l)
   (cond [(empty? l) l]
+        [(list? (first l)) (cons (simbolizar-elems (first l)) (simbolizar-elems (rest l)))]
         [else (cons (string->symbol (first l)) (simbolizar-elems (rest l)))]))
 
 ; Funcao que junta duas listas.
@@ -170,4 +191,6 @@
         [else (main "Arq. de graf. PDL inexistente!")]))
 
 ; Chamada a funcao 'main' que recebe do usuario os nomes dos arquivos (de programa e grafo PDL) a serem processados.
-(main "")
+;(main "")
+(varrer-entrada entrada)
+(processar-entrada entrada)
