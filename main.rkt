@@ -1,28 +1,62 @@
 #lang racket
 (require graph)
 (define eh-valido true)
-(define entrada '((1 2) * U (3 4) *))
+(define no-atual 'x1)
+(define entrada-programa(list 1 2))
+(define matriz-grafo '())
+;(set! entrada-programa (append entrada-programa (list (list 5 6))))
+(define matriz-programa '())
 
-(define (varrer-entrada p)
-  (cond [(empty? p) p]
-        [else (fprintf (current-output-port) "Eh lista? ~a - Eh atomo? ~a - Elemento: ~a\n" (list? (first p)) (not (list? (first p))) (first p))
-              (varrer-entrada (rest p))]))
+;Recebe o programa.
+(define programa (list 1 ";" 2 "*" ";" "(" 1 ";" 4 ")"))
+;Cria a lista de relacoes.
+(define relacoes (list ))
 
-(define (criar-trecho p)
-  (printf "Hey you -> ~a\n" p)
-  (cond [(empty? p) p]
-        [(list? (first p)) (cons (criar-trecho (first p)) (criar-trecho (rest p)))]
-        [(atom? (first p)) (cons (first p) (criar-trecho (rest p)))]))
+#| Le um programa e retorna todos os pares ordenados com as possiveis transições do programa. Onde:
+* 'anteriorS' é o simbolo anterior;
+* 'anterior' é o numero anterior;
+* 'relacoes' eh a lista com as possiveis transicoes do programa. |#
+(define (le_programa programa_entrada anterior anteriorS relacoes)
+  ;verifica se o item atual da lista é um numero, se for faz um par ordenado dele com o anterior e salva ele no anterior
+  (cond[(number? (first programa_entrada))
+        (set! relacoes(append relacoes(list (list anterior (first programa_entrada)))))
+        (set! anterior (first programa_entrada))
+       ]
+       ;se nao for um numero
+       [else
+        ;verifica se eh o caracter uniao
+        (cond[(equal? (first programa_entrada) "U") "deu ruim uniao"])
+        ;verifica se eh o caracter *
+        (cond[(equal? (first programa_entrada) "*")
+              ;verifica se o caracter * vem depois de um ), se nao, adiciona uma transicao do anterior pra o anterior
+             (cond [(equal? anteriorS ")") 
+                   (set! anteriorS (first programa_entrada))]
+             [else (set! relacoes(append relacoes(list(list anterior anterior))))])
+             (set! anteriorS (first programa_entrada))])])
+  ;verifica se o programa esta vazio, ou seja, foi todo percorrrido, se sim entao retorna, se nao chama a proxima instancia para a tail
+  (cond[(empty? (rest programa_entrada))
+        (rest relacoes)]
+       [else (le_programa (rest programa_entrada) anterior anteriorS relacoes)]))
 
-(define (processar-entrada p)
-  (local
-    [(define tr (criar-trecho (first p)))]
-    (cond [(not (empty? tr)) (printf "Trecho: ~a\n" tr)]
-          [(not (empty? p)) (processar-entrada (rest p))])))
 
-(define (atom? x)
-  (cond [(list? x) false]
-        [else true]))
+;Dado um grafo e a lista de programas, nós executamos esses programas sequencialmente.
+(define (executa-programas grafo)
+  (define programa-atual (first entrada-programa))
+  (cond [(number? programa-atual) (executa-programa-simples grafo programa-atual)]))
+
+;Para uma transição simples, a partir do no atual e um programa, a função leva o nó atual para o primeiro caminho possivel com base no programa dado.
+(define(executa-programa-simples grafo programa)
+  (define vizinhos (get-neighbors grafo no-atual))
+  (display (teste-vizinhos grafo programa vizinhos '())))
+
+;Percorre todos os vizinhos do no para ver qual deles é o que tem o 'peso' do programa dado, e retorna uma lista com o par ordenado da transição.
+(define (teste-vizinhos grafo programa vizinhos transicao-possivel)
+  (cond [(empty? vizinhos) transicao-possivel]
+        [else
+         (cond[(equal? programa (edge-weight grafo no-atual (first vizinhos)))
+               (append transicao-possivel (list(list no-atual (first vizinhos))))]
+              [else
+               (teste-vizinhos grafo programa (rest vizinhos) transicao-possivel)])]))
 
 ; Verifica se um elemento x eh um programa PDL.
 (define (programa? x)
@@ -33,30 +67,11 @@
   (cond [(eq? false (regexp-match #rx"[A-Z]+" x)) false] [else true]))
 
 ; Verifica se um objeto pertence a uma lista de elementos.
-(define (pertence-a? obj elems)
+(define (pertence-a? obj elems)(
   (cond [(empty? elems) false]
         [(empty? (filter (lambda (x) (equal? x obj)) elems)) false]
         [else true]))
-
-; Com problemas.
-(define (remover l1 l2)
-  (cond [(empty? l1) l2]
-        [(empty? l2) l1]
-        [(eq? (first l1) (first l2)) (cons (second l2) (remover (cdr l1) (cdr l2)))]
-        [else (cons (first l2) (remover (cdr l1) (cdr l2)))]))
-
-; Com problemas.
-(define (pegar-trechos p parent)
-  (cond [(empty? parent) parent]
-        [(eq? (string->symbol "(") (first p)) (cons (first p) (pegar-trechos (rest p) (cons (first p) parent)))]
-        [(eq? (string->symbol ")") (first p)) (cons (first p) (pegar-trechos (rest p) (reverse (cdr (reverse parent)))))]))
-
-; Com problemas.
-(define (processar-programa p)
-  (cond [(empty? p) p]
-        [(eq? (first p) (string->symbol "(")) (define trecho (pegar-trechos p '()))
-                                              (display trecho)
-                                              (processar-programa (remover trecho p))]))
+)
 
 #| Recebe como entrada uma 'string' contendo todo o conteudo de um programa PDL lido.
    Separa cada elemento do programa PDL em suas categorias. Funcionalidade ainda nao esta pronta.|#
@@ -155,27 +170,9 @@
   (display "Relacoes em alpha: ")
   (writeln relac)
   (gerar-grafo relac grafo1 mun)
-  (cond [eh-valido
-         (display (graphviz grafo1))])
-)
-
-; [a] é true?
-
-(define(teste1 grafo no-partida programa)
-  (define vizinhos (get-neighbors grafo no-partida))
-  (teste-vizinhos grafo no-partida programa vizinhos)
-  )
-
-(define (teste-vizinhos grafo no-partida programa vizinhos)
-  (cond [(empty? vizinhos) false]
-        [else
-         (cond[(equal? programa (edge-weight grafo no-partida (first vizinhos)))
-               (set! no-partida (first vizinhos))
-               true]
-              [else
-               (teste-vizinhos grafo no-partida programa (rest vizinhos))]
-              )
-  ])
+  (executa-programas grafo1)
+  ;(cond [eh-valido
+         (display (graphviz grafo1));])
 )
 
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
@@ -190,7 +187,11 @@
   (cond [(file-exists? nome-graf) (criar-grafo nome-graf)]
         [else (main "Arq. de graf. PDL inexistente!")]))
 
+
+#|--------------------------------------------------------MAIN---------------------------------------------------------------|#
+
+
+;chamada do programa
+(le_programa programa ";" "" relacoes)
 ; Chamada a funcao 'main' que recebe do usuario os nomes dos arquivos (de programa e grafo PDL) a serem processados.
-;(main "")
-(varrer-entrada entrada)
-(processar-entrada entrada)
+(main "")
