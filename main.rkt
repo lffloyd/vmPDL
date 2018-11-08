@@ -2,7 +2,8 @@
 (require graph)
 (define eh-valido true)
 (define no-atual 'x1)
-(define entrada-programa(list 1 2))
+(define entrada-programa(list 1 2 3 2 2))
+(define transicao-possivel '())
 (define matriz-grafo '())
 ;(set! entrada-programa (append entrada-programa (list (list 5 6))))
 (define matriz-programa '())
@@ -40,23 +41,29 @@
 
 
 ;Dado um grafo e a lista de programas, nós executamos esses programas sequencialmente.
-(define (executa-programas grafo)
-  (define programa-atual (first entrada-programa))
-  (cond [(number? programa-atual) (executa-programa-simples grafo programa-atual)]))
-
+(define (executa-programas grafo entrada-programa)
+  (cond [(empty? entrada-programa) null]
+        [else
+         (define programa-atual (first entrada-programa))
+         (cond [(number? programa-atual) (executa-programa-simples grafo programa-atual)])
+         (executa-programas grafo (rest entrada-programa))]
+  )
+)
 ;Para uma transição simples, a partir do no atual e um programa, a função leva o nó atual para o primeiro caminho possivel com base no programa dado.
 (define(executa-programa-simples grafo programa)
-  (define vizinhos (get-neighbors grafo no-atual))
-  (display (teste-vizinhos grafo programa vizinhos '())))
+  (teste-vizinhos grafo programa (get-neighbors grafo no-atual)))
 
 ;Percorre todos os vizinhos do no para ver qual deles é o que tem o 'peso' do programa dado, e retorna uma lista com o par ordenado da transição.
-(define (teste-vizinhos grafo programa vizinhos transicao-possivel)
+(define (teste-vizinhos grafo programa vizinhos)
   (cond [(empty? vizinhos) transicao-possivel]
         [else
          (cond[(equal? programa (edge-weight grafo no-atual (first vizinhos)))
-               (append transicao-possivel (list(list no-atual (first vizinhos))))]
+               (define no-aux no-atual)
+               (set! no-atual (first vizinhos))
+               (set! transicao-possivel (append transicao-possivel (list(list no-aux (first vizinhos)))))
+               transicao-possivel]
               [else
-               (teste-vizinhos grafo programa (rest vizinhos) transicao-possivel)])]))
+               (teste-vizinhos grafo programa (rest vizinhos))])]))
 
 ; Verifica se um elemento x eh um programa PDL.
 (define (programa? x)
@@ -156,6 +163,20 @@
          ])
 )
 
+(define (testa-matriz mundo lista-transicoes)
+  (cond[(empty? mundo) null]
+       [else
+        (cond[(member (first mundo) (first lista-transicoes))
+              testa-matriz (rest mundo) (lista-transicoes)]
+             [else
+              null
+              ]
+)])
+
+        
+)
+
+
 ; Funcao que cria um grafo a partir do nome de arq. de grafo passado por parametro. Cria mundos/estados e relacoes entre os mesmos.
 (define (criar-grafo nome-arq)
   (display "Arquivo de grafo: ")
@@ -170,9 +191,11 @@
   (display "Relacoes em alpha: ")
   (writeln relac)
   (gerar-grafo relac grafo1 mun)
-  (executa-programas grafo1)
-  ;(cond [eh-valido
-         (display (graphviz grafo1));])
+  (executa-programas grafo1 entrada-programa)
+  ;(testa-matriz mundo transicao-possivel)
+  (cond [eh-valido
+         (display (graphviz grafo1))])
+  (display transicao-possivel)
 )
 
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
