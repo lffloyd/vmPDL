@@ -1,6 +1,6 @@
 #lang racket
 ;Recebe o programa.
-(define programa (list "(" "|"1 ";" 2 ")" "U" "(" "||" 3 ";" 4 ";" 5 "E" ")"))
+(define programa (list "(" 1 ";" 2 ")" "*" ";" "(" 3 ";" 4 ";" 5 ")"))
 ;Cria a lista de relacoes.
 (define relacoes (list ))
 
@@ -49,7 +49,7 @@
 
 (set! relacoes(le_programa programa "I" "" relacoes "I" "" ""))
 
-(define grafo (list 1 "(" "I" "a" ")" 3 "(" "I" "d" ")"  4 "(" "d" "e" ")" 2 "(" "a" "b" ")" "X" "X" "X"))
+(define grafo (list 1 "(" "I" "a" ")" 3 "(" "b" "c" ")"  4 "(" "c" "d" ")" 5 "(" "d" "e" ")" 2 "(" "a" "b" ")" "X" "X" "X"))
 (define gt (list ))
 (define result (list ))
 
@@ -101,6 +101,18 @@
   )
         (eliminateI (rest relacoes) resp)]))
 
+
+(define (eliminateEqual result resp)
+(cond[(empty? result) resp]
+       [else
+        (cond[(equal? (busca (first result) resp 1) 0)]
+             [else (set! resp(append resp(list (first result))))]
+
+  )
+        (eliminateEqual (rest result) resp)])
+  )
+
+
 (define (ehValido1 relacoes result)
   (cond[(equal? (length relacoes) (length result))
         (ehValido relacoes result)]
@@ -143,7 +155,8 @@
 
 (set! result (f grafo gt grafo result))
 (set! relacoes (eliminateI relacoes (list )))
-(display relacoes)
-(display "\n")
-(display result)
+(set! result (eliminateEqual result (list )))
+;(display relacoes)
+;(display "\n")
+;(display result)
 (display (ehValido1 relacoes result))
