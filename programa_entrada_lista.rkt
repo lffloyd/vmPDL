@@ -1,6 +1,9 @@
 #lang racket
 ;Recebe o programa.
 (define programa (list "(" 1 ";" 2 ")" "*" ";" "(" 3 ";" 4 ";" 5 ")"))
+;Recebe o grafo.
+(define grafo (list 1 "(" "I" "a" ")" 3 "(" "b" "c" ")"  4 "(" "c" "d" ")" 5 "(" "d" "e" ")" 2 "(" "a" "b" ")" "X" "X" "X"))
+
 ;Cria a lista de relacoes.
 (define relacoes (list ))
 
@@ -49,7 +52,6 @@
 
 (set! relacoes(le_programa programa "I" "" relacoes "I" "" ""))
 
-(define grafo (list 1 "(" "I" "a" ")" 3 "(" "b" "c" ")"  4 "(" "c" "d" ")" 5 "(" "d" "e" ")" 2 "(" "a" "b" ")" "X" "X" "X"))
 (define gt (list ))
 (define result (list ))
 
@@ -152,11 +154,9 @@
 
         ]))
         
-
 (set! result (f grafo gt grafo result))
 (set! relacoes (eliminateI relacoes (list )))
 (set! result (eliminateEqual result (list )))
-;(display relacoes)
-;(display "\n")
-;(display result)
-(display (ehValido1 relacoes result))
+(printf "Programa -> ~a\n" programa)
+(printf "Grafo -> ~a\n" grafo)
+(printf "Grafo eh modelo do programa? ~a\n" (ehValido1 relacoes result))
