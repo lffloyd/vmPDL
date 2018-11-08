@@ -29,7 +29,14 @@ De forma análoga à definição de um programa, um grafo também será definido
 (define grafo list naoacheialinhadografo)
 ```
 
-Após efetuadas as alterações nas duas entradas, pode-se iniciar a execução do arquivo 'main.rkt'. O programa irá avaliar se o grafo descrito é modelo do programa PDL dado.
+Após efetuadas as alterações nas duas entradas, pode-se iniciar a execução do arquivo 'main.rkt'. O programa irá avaliar se o grafo descrito é modelo do programa PDL dado. Para executar o programa, a IDE Dr. Racket pode ser utilizada. A IDE acompanha a instalação da linguagem no computador. Considerando o sistema Ubuntu 16.04 e que a linguagem tenha sido instalada na pasta '/home', para executar o Dr. Racket basta digitar no Terminal:
+
+```
+~$ ./racket/bin/drracket
+```
+No menu "Ficheiro" do programa, seleciona-se a opção "Abrir". Uma janela pedindo pela escolha do arquivo a ser aberto será exibida. Deve-se escolher o arquivo 'main.rkt'. O arquivo será carregado, e, após feitas as alterações desejadas, pode-se executar o programa apertando o botão "Executar" no canto superior direito da janela da IDE Dr. Racket.
+
+Informações como 'prints' serão exibidos na janela do console interatico do Racket, que está localizada na parte inferior da tela da IDE, abaixo do campo de edição de código.
 
 ### Exemplos
 
