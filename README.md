@@ -16,13 +16,27 @@ Para executar o programa é necessário possuir uma versão da linguagem Racket 
 
 O arquivo a ser executado para iniciar o programa encontra-se na raiz do projeto e chama-se 'main.rkt'.
 
-Ao ser iniciado, o programa exibirá um 'prompt' para inserção do nome do arquivo de programa PDL a ser usado:
+Dentro do código-fonte deste arquivo, a linha a seguir em seu início define a entrada do programa PDL a ser avaliado:
 
 ```
-Insira o nome do arq. do programa PDL:
+(define programa (list 1 ";" 2 "*" ";" "(" 1 ";" 4 ")"))
 ```
 
-Para o qual deve-se digitar o nome do arquivo a ser usado como tal. Em seguida, será requisitado o arquivo do grafo ou 'frame' PDL que será analisado em relação ao programa PDL especificado logo acima. Novamente, um 'prompt' aguarda a digitação do nome do arquivo. Reparar que a inserção de nomes de arquivo inválidos exibirá um erro e os nomes corretos serão pedidos.
+Pode-se alterar esta lista para testar o programa com entradas de programa distintas. Exemplos de programas e de grafos serão tratados na seção seguinte.
+De forma análoga à definição de um programa, um grafo também será definido a partir da alteração de uma linha do arquivo:
+
+```
+(define grafo list naoacheialinhadografo)
+```
+
+Após efetuadas as alterações nas duas entradas, pode-se iniciar a execução do arquivo 'main.rkt'. O programa irá avaliar se o grafo descrito é modelo do programa PDL dado.
+
+### Exemplos
+
+Aqui entram os exemplos.
+
+*Exemplo 1: Bláblá
+*Exemplo 2: Bláblá
 
 ## Autores
 
