@@ -1,6 +1,6 @@
 #lang racket
 ;Recebe o programa.
-(define programa (list "(" "|"1 ";" 2 ")" "U" "(" "||" 3 ";" 4 "E" ")"))
+(define programa (list "(" "|"1 ";" 2 ")" "U" "(" "||" 3 ";" 4 ";" 5 "E" ")"))
 ;Cria a lista de relacoes.
 (define relacoes (list ))
 
@@ -106,28 +106,39 @@
         (ehValido relacoes result)]
        [else "false"]))
 
-(define (busca origem destino)
-(cond[(empty? origem) false]
+(define (busca origem destino resp)
+(cond[(empty? destino) resp]
      [else
+      ;(display "\n")
+      ;(display (first origem))
+      ;(display (first(first destino)))
+      ;(display "\n")
       (cond[(equal? (first origem) (first(first destino)))
-            (cond[(equal? (first origem) (first(rest(first destino))))
-                 (true)]
+            ;(display "\n")
+      ;(display (first(rest origem)))
+      ;(display (first(rest(first destino))))
+      ;(display "\n")
+            (cond[(equal? (first(rest origem)) (first(rest(first destino))))(set! resp 0)]
             )])
-      (busca origem (rest destino))])
+      (busca origem (rest destino) resp)])
   )
 
 (define (ehValido relacoes result)
   (cond[(empty? relacoes)
-        (cond[(empty? result)
               "true"]
              
        
        [else
-        (cond[(busca (first relacoes) result)
+        ;(display "\n")
+        ;(display (busca (first relacoes) result 1))
+         ;     (display result)
+         ;(display "\n")
+        (cond[(equal? (busca (first relacoes) result 1) 0)
+              
               (ehValido (rest relacoes) result)
               ][else "false"])
 
-        ])]))
+        ]))
         
 
 (set! result (f grafo gt grafo result))
@@ -135,3 +146,4 @@
 (display relacoes)
 (display "\n")
 (display result)
+(display (ehValido1 relacoes result))
