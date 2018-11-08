@@ -8,7 +8,7 @@
 (define matriz-programa '())
 
 ;Recebe o programa.
-(define programa (list 0 ";" "(" "|"1 ";" 2 ")" "U" "(" "||" 3 ";" 4 "E" ")" ";" "B" 5  ))
+(define programa (list 1 ";" 2 "*" ";" "(" 1 ";" 4 ")"))
 ;Cria a lista de relacoes.
 (define relacoes (list ))
 
@@ -16,44 +16,27 @@
 * 'anteriorS' é o simbolo anterior;
 * 'anterior' é o numero anterior;
 * 'relacoes' eh a lista com as possiveis transicoes do programa. |#
-(define (le_programa programa_entrada anterior anteriorS relacoes anteriorU fimU1 fimU2)
+(define (le_programa programa_entrada anterior anteriorS relacoes)
   ;verifica se o item atual da lista é um numero, se for faz um par ordenado dele com o anterior e salva ele no anterior
   (cond[(number? (first programa_entrada))
-        (cond[(equal? anteriorS "||")
-              (set! relacoes(append relacoes(list (list anteriorU (first programa_entrada)))))
-              (set! anterior (first programa_entrada))]
-             [(equal? anteriorS "B")
-              (set! relacoes(append relacoes(list (list fimU1 (first programa_entrada)))))
-              (set! relacoes(append relacoes(list (list fimU2 (first programa_entrada)))))
-              (set! anterior (first programa_entrada))
-              ]
-        [else
         (set! relacoes(append relacoes(list (list anterior (first programa_entrada)))))
-        (set! anterior (first programa_entrada))])
+        (set! anterior (first programa_entrada))
        ]
        ;se nao for um numero
        [else
         ;verifica se eh o caracter uniao
-        (cond[(equal? (first programa_entrada) "|")
-              (set! anteriorU anterior)])
-        ;
-        (cond[(equal? (first programa_entrada) "U")
-              (set! fimU1 anterior)])
-        ;
-        (cond[(equal? (first programa_entrada) "E")
-              (set! fimU2 anterior)])
+        (cond[(equal? (first programa_entrada) "U") "deu ruim uniao"])
         ;verifica se eh o caracter *
         (cond[(equal? (first programa_entrada) "*")
               ;verifica se o caracter * vem depois de um ), se nao, adiciona uma transicao do anterior pra o anterior
              (cond [(equal? anteriorS ")") 
                    (set! anteriorS (first programa_entrada))]
              [else (set! relacoes(append relacoes(list(list anterior anterior))))])
-             ])
-        (set! anteriorS (first programa_entrada))])
+             (set! anteriorS (first programa_entrada))])])
   ;verifica se o programa esta vazio, ou seja, foi todo percorrrido, se sim entao retorna, se nao chama a proxima instancia para a tail
   (cond[(empty? (rest programa_entrada))
-        relacoes]
-       [else (le_programa (rest programa_entrada) anterior anteriorS relacoes anteriorU fimU1 fimU2)]))
+        (rest relacoes)]
+       [else (le_programa (rest programa_entrada) anterior anteriorS relacoes)]))
 
 
 ;Dado um grafo e a lista de programas, nós executamos esses programas sequencialmente.
@@ -209,6 +192,6 @@
 
 
 ;chamada do programa
-(le_programa programa "I" "" relacoes "I" "" "")
+(le_programa programa ";" "" relacoes)
 ; Chamada a funcao 'main' que recebe do usuario os nomes dos arquivos (de programa e grafo PDL) a serem processados.
 (main "")
