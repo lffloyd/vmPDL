@@ -181,17 +181,18 @@
 )
 
 (define (testa-matriz mundo lista-transicoes)
-  (cond[(empty? mundo) null]
+  (cond[(empty? mundo) true]
        [else
-        (cond[(member (first mundo) (first lista-transicoes))
-              testa-matriz (rest mundo) (lista-transicoes)]
+        (cond[(member (first mundo) (junta-lista lista-transicoes '()))
+              (testa-matriz (rest mundo) lista-transicoes)]
              [else
-              null
-              ]
-)])
+              (set! eh-valido false)])]))
 
-        
-)
+(define (junta-lista matriz nova-lista)
+  (cond[(empty? matriz) nova-lista]
+       [else
+        (set! nova-lista (append nova-lista (first matriz)))
+        (junta-lista (rest matriz) nova-lista)]))
 
 
 ; Funcao que cria um grafo a partir do nome de arq. de grafo passado por parametro. Cria mundos/estados e relacoes entre os mesmos.
@@ -213,6 +214,7 @@
   (cond [eh-valido
          (display (graphviz grafo1))])
   (display transicao-possivel)
+  (testa-matriz mun transicao-possivel)
 )
 
 ; Pede ao usuario os nomes dos arquivos e chama as funcoes correspondentes para o processamento dos mesmos.
