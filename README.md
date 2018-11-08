@@ -35,8 +35,10 @@ Após efetuadas as alterações nas duas entradas, pode-se iniciar a execução 
 
 Aqui entram os exemplos.
 
-*Exemplo 1: Bláblá
-*Exemplo 2: Bláblá
+* Exemplo 1: Bláblá
+
+* Exemplo 2: Bláblá
+
 
 ## Autores
 
