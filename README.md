@@ -26,7 +26,7 @@ Pode-se alterar esta lista para testar o programa com entradas de programa disti
 De forma análoga à definição de um programa, um grafo também será definido a partir da alteração de uma linha do arquivo:
 
 ```
-(define grafo list naoacheialinhadografo)
+(define grafo (list 1 "(" "I" "a" ")" 3 "(" "b" "c" ")"  4 "(" "c" "d" ")" 5 "(" "d" "e" ")" 2 "(" "a" "b" ")" "X" "X" "X"))
 ```
 
 Após efetuadas as alterações nas duas entradas, pode-se iniciar a execução do arquivo 'main.rkt'. O programa irá avaliar se o grafo descrito é modelo do programa PDL dado. Para executar o programa, a IDE Dr. Racket pode ser utilizada. A IDE acompanha a instalação da linguagem no computador. Considerando o sistema Ubuntu 16.04 e que a linguagem tenha sido instalada na pasta '/home', para executar o Dr. Racket basta digitar no Terminal:
@@ -38,9 +38,19 @@ No menu "Ficheiro" do programa, seleciona-se a opção "Abrir". Uma janela pedin
 
 Informações como 'prints' serão exibidos na janela do console interatico do Racket, que está localizada na parte inferior da tela da IDE, abaixo do campo de edição de código.
 
+Para entrada e grafo exemplififcados acima, o programa dar como saída o seguinte:
+
+```
+Programa -> (( 1 U 2 ) * ; ( 3 ; 4 ; 5 ))
+Grafo -> (1 ( I a ) 3 ( b c ) 4 ( c d ) 5 ( d e ) 2 ( a b ) X X X)
+Grafo eh modelo do programa? true
+```
+
+Indicando que o grafo é modelo do programa de entrada especificado.
+
 ### Exemplos
 
-Aqui entram os exemplos.
+Nesta seção, exemplos de programas e grafos a serem dados como entrada serão dados e explicados.
 
 * Exemplo 1: Bláblá
 
