@@ -50,12 +50,40 @@ Indicando que o grafo é modelo do programa de entrada especificado.
 
 ### Exemplos
 
-Nesta seção, exemplos de programas e grafos a serem dados como entrada serão dados e explicados.
+Nesta seção, exemplos de programas e grafos a serem dados como entrada serão dados e explicados. Antes de mostrar os exemplos, a sintaxe utilizada para descrição dos mesmos.
 
-* Exemplo 1: Bláblá
+#### Sintaxe
 
-* Exemplo 2: Bláblá
+Para descrever o programa os seguintes símbolos foram utilizados:
 
+* Números - Representam os programas atômicos do programa original.
+* Número seguido de * -  Representa um programa usando o fecho transitivo.
+* '|' - Início da primeira parte de um bloco de união.
+* '||' - Início da segunda parte de um bloco de união.
+* 'U' - Reforça que existe união.
+* 'B' - Sinaliza o início de um bloco de união.
+* 'E' - Sinaliza o término de um bloco de união.
+
+Para descrever o grafo os seguintes símbolos foram utilizados:
+
+* 'I' - Sinaliza o primeiro vértice ou nó ou estado da execução do programa.
+* 'X' - Sinaliza o fim do grafo (como um \0 sinaliza o fim de uma string em C, usado apenas como 'flag').
+
+* Exemplo 1:
+
+```
+Programa: "(" 1 ";" 2 ")" "*" ";" "(" 3 ";" 4 ";" 5 ")"
+Grafo:  1 "(" "I" "a" ")" 3 "(" "b" "c" ")"  4 "(" "c" "d" ")" 5 "(" "d" "e" ")" 2 "(" "a" "b" ")" "X" "X" "X"
+```
+Este exemplo retornará 'true'.
+
+* Exemplo 2:
+
+```
+Programa: "(" "|" 1 ";" 2 ")" "U" "(" "||" 3 ";" 4 ";" "E" ")"
+Grafo: 1 "(" "I" "a" ")" 2 "(" "a" "b" ")"  3 "(" "I" "c" ")" 4 "(" "c" "d" ")" "X" "X" "X"
+```
+Este exemplo retornará 'true'.
 
 ## Autores
 
