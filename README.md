@@ -38,7 +38,7 @@ No menu "Ficheiro" do programa, seleciona-se a opção "Abrir". Uma janela pedin
 
 Informações como 'prints' serão exibidos na janela do console interatico do Racket, que está localizada na parte inferior da tela da IDE, abaixo do campo de edição de código.
 
-Para entrada e grafo exemplififcados acima, o programa dar como saída o seguinte:
+Para entrada e grafo exemplificados acima, o programa dar como saída o seguinte:
 
 ```
 Programa -> (( 1 U 2 ) * ; ( 3 ; 4 ; 5 ))
